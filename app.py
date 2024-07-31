@@ -13,7 +13,6 @@ def scrape_squad():
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
     names_arr = []
-    tbody = soup.select_one('div.box div#yw1 table.items > tbody')
-    for name in tbody.select('tr > td.posrela > table.inline-table td.hauptlink > a'):
-        names_arr.append(name.text)
+    for name in soup.find_all("a", class_="hauptlink"):
+        names_arr.append(name.decode_contents())
     return names_arr
