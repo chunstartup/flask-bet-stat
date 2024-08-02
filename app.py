@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import requests
 from bs4 import BeautifulSoup
 app = Flask(__name__)
@@ -12,8 +12,9 @@ def fetch(url):
 
     soup = BeautifulSoup(response.content, "html.parser")
     name_arr = []
-    for name in soup.find_all("ul", class_="data-header__items"):
-        name_arr.append(name.text)
+    tbody = soup.select_one('div.box div#yw1 table.items > tbody')
+    for name in tbody.select('tr > td.posrela > table.inline-table td.hauptlink > a'):
+        name_arr.append(" ".join(name.text.split()))
     return name_arr
 
 @app.route('/')
@@ -36,21 +37,15 @@ def input_page():
 
 @app.route('/scrape_squad')
 def scrape_squad():
-    print('hi')
-    
     url = "https://www.transfermarkt.com/fc-arsenal/startseite/verein/11"
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
     }
     response = requests.get(url, headers=headers)
-
-    # Debugging: Print response status code and text
-    print(f"Status Code: {response.status_code}")
-    print(f"Response Text: {response.text[:100]}")  # Only print the first 100 characters
     
     soup = BeautifulSoup(response.content, "html.parser")
     name_arr = []
     tbody = soup.select_one('div.box div#yw1 table.items > tbody')
     for name in tbody.select('tr > td.posrela > table.inline-table td.hauptlink > a'):
-        name_arr.append(name.text)
+        name_arr.append(" ".join(name.text.split()))
     return name_arr
