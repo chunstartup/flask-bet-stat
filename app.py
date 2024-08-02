@@ -31,7 +31,7 @@ def input_page():
     if request.method == 'POST': 
         print(f"url: {request.values['url']}")
         result = fetch(request.values['url'])
-        return html + '<textarea id="w3review" name="w3review" rows="4" cols="50">' + result + '</textarea>'
+        return html + '<textarea id="w3review" name="w3review" rows="4" cols="50">' + ''.join(result) + '</textarea>'
 
     return html
 
@@ -47,5 +47,20 @@ def scrape_squad():
     name_arr = []
     tbody = soup.select_one('div.box div#yw1 table.items > tbody')
     for name in tbody.select('tr > td.posrela > table.inline-table td.hauptlink > a'):
+        name_arr.append(" ".join(name.text.split()))
+    return name_arr
+
+@app.route('/scrape_squad2')
+def scrape_squad2():
+    url = "https://www.transfermarkt.com/fc-arsenal/startseite/verein/11"
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+    }
+    response = requests.get(url, headers=headers)
+    
+    soup = BeautifulSoup(response.content, "html.parser")
+    name_arr = []
+    tbody = soup.select_one('div.box div#yw1 table.items > tbody')
+    for name in tbody.select('div.box div#yw1 table.items > tbody > tr > td.posrela > table.inline-table td.hauptlink > a'):
         name_arr.append(" ".join(name.text.split()))
     return name_arr
