@@ -1,0 +1,16 @@
+<html>
+    <form method='post' action='{{ prefill_obj.action }}'>
+        <input type='text' name='url' style='width: 100%;' value='{{ prefill_obj.url }}' />
+        <br/>
+        <input type='text' name='css_selector' style='width: 100%;' value='{{ prefill_obj.css_selector }}' />
+        <br/>
+        <button type='submit'>Submit</button></form>
+
+        Result: 
+        {% for result in result_arr %}
+            <p>
+                {{ result }}
+            </p>
+        {% endfor %}
+    </form>
+</html>
